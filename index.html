@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRON LOG — Progressive Overload Tracker</title>
+<meta name="description" content="Personal 4-week progressive overload training log, diet plan, and body measurement tracker.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="noise-overlay" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">IL</span>
+    <span class="brand-text">IRON <em>LOG</em></span>
+  </div>
+  <nav class="tabs" id="mainNav">
+    <button class="tab-btn is-active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="workout">Workout</button>
+    <button class="tab-btn" data-tab="diet">Diet</button>
+    <button class="tab-btn" data-tab="progress">Progress</button>
+    <button class="tab-btn" data-tab="notes">Notes</button>
+  </nav>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section class="panel is-active" id="dashboard">
+    <div class="hero">
+      <div class="hero-left">
+        <p class="eyebrow">Cycle 01 &middot; Muscle Gain Block</p>
+        <h1>Push. Track.<br><span class="accent-text">Add the plate.</span></h1>
+        <p class="hero-sub">4-week progressive overload program &mdash; Push / Pull / Legs, 6 days a week. Log every session, watch the numbers move.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-goto="workout">Open today's session</button>
+          <button class="btn btn-ghost" data-goto="progress">Log bodyweight</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="ring-card">
+          <svg viewBox="0 0 160 160" class="ring-svg">
+            <circle cx="80" cy="80" r="68" class="ring-track"></circle>
+            <circle cx="80" cy="80" r="68" class="ring-fill" id="ringFill"></circle>
+          </svg>
+          <div class="ring-center">
+            <span class="ring-num" id="ringPercent">0%</span>
+            <span class="ring-label">week complete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <span class="stat-label">Current week</span>
+        <span class="stat-value" id="statWeek">Week 1</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Sessions logged</span>
+        <span class="stat-value" id="statSessions">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Streak</span>
+        <span class="stat-value" id="statStreak">0 days</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Latest weigh-in</span>
+        <span class="stat-value" id="statWeight">&mdash;</span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <article class="info-card">
+        <h3>Weight progression rule</h3>
+        <p>Double progression: stay at a weight until <strong>every set</strong> hits the top of the rep range, then add 1&ndash;2.5kg (upper body) or 2.5&ndash;5kg (lower body) and drop back to the bottom of the range.</p>
+        <p class="hi-note">Reps badhao jab tak asaan na lage, phir weight badhao.</p>
+      </article>
+      <article class="info-card">
+        <h3>When you fail a set</h3>
+        <p>Missed reps &rarr; rest 90s extra, retry. Form breaks down &rarr; cut weight 10% for remaining sets. Repeat the same weight next session until it's clean.</p>
+        <p class="hi-note">Kabhi bhi form todke reps mat nikalo.</p>
+      </article>
+      <article class="info-card">
+        <h3>Nutrition target</h3>
+        <p>~3000 kcal/day, ~120g protein (~2.3g/kg bodyweight). Surplus is the other half of this program &mdash; training alone won't move the scale.</p>
+        <p class="hi-note">Surplus ke bina best program bhi kaam nahi karega.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ WORKOUT ============ -->
+  <section class="panel" id="workout">
+    <div class="section-head">
+      <p class="eyebrow">Training Block</p>
+      <h2>4-Week Progressive Overload Plan</h2>
+      <p class="section-sub">Push / Pull / Legs &times; 2, six days a week. Week 4 is a deload &mdash; same movements, ~60% intensity.</p>
+    </div>
+
+    <div class="week-tabs" id="weekTabs">
+      <button class="week-btn is-active" data-week="1">Week 1<span>RPE 7</span></button>
+      <button class="week-btn" data-week="2">Week 2<span>RPE 7&ndash;8</span></button>
+      <button class="week-btn" data-week="3">Week 3<span>RPE 8</span></button>
+      <button class="week-btn" data-week="4">Week 4<span>Deload</span></button>
+    </div>
+
+    <p class="week-note" id="weekNote"></p>
+
+    <div class="day-tabs" id="dayTabs">
+      <button class="day-btn is-active" data-day="push">Push</button>
+      <button class="day-btn" data-day="pull">Pull</button>
+      <button class="day-btn" data-day="legs">Legs</button>
+    </div>
+
+    <div class="table-wrap">
+      <table class="exercise-table" id="exerciseTable">
+        <thead>
+          <tr>
+            <th class="col-check">Done</th>
+            <th>Exercise</th>
+            <th>Sets &times; Reps</th>
+            <th>RPE</th>
+            <th>Rest</th>
+            <th>Weight used</th>
+          </tr>
+        </thead>
+        <tbody id="exerciseBody"></tbody>
+      </table>
+    </div>
+
+    <div class="log-actions">
+      <button class="btn btn-primary" id="markSessionBtn">Mark this session complete</button>
+      <span class="log-hint" id="sessionHint"></span>
+    </div>
+  </section>
+
+  <!-- ============ DIET ============ -->
+  <section class="panel" id="diet">
+    <div class="section-head">
+      <p class="eyebrow">Nutrition</p>
+      <h2>Current Diet Plan</h2>
+      <p class="section-sub">Approx. 3000 kcal / 120g protein day, built around training times.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table class="diet-table">
+        <thead>
+          <tr><th>Meal</th><th>Items</th></tr>
+        </thead>
+        <tbody id="dietMealBody"></tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-heading">Macro breakdown (approx.)</h3>
+    <div class="table-wrap">
+      <table class="diet-table">
+        <thead>
+          <tr><th>Meal</th><th>Calories</th><th>Protein</th><th>Carbs</th><th>Fat</th></tr>
+        </thead>
+        <tbody id="dietMacroBody"></tbody>
+      </table>
+    </div>
+
+    <div class="info-grid two-col">
+      <article class="info-card">
+        <h3>What's working</h3>
+        <ul id="dietWorking"></ul>
+      </article>
+      <article class="info-card">
+        <h3>Areas to improve</h3>
+        <ul id="dietImprove"></ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ PROGRESS ============ -->
+  <section class="panel" id="progress">
+    <div class="section-head">
+      <p class="eyebrow">Body Log</p>
+      <h2>Weight &amp; Measurements</h2>
+      <p class="section-sub">Logged locally in this browser &mdash; nothing leaves your device.</p>
+    </div>
+
+    <form class="log-form" id="logForm">
+      <div class="field">
+        <label for="logDate">Date</label>
+        <input type="date" id="logDate" required>
+      </div>
+      <div class="field">
+        <label for="logWeight">Weight (kg)</label>
+        <input type="number" step="0.1" id="logWeight" placeholder="52.6" required>
+      </div>
+      <div class="field">
+        <label for="logChest">Chest (cm)</label>
+        <input type="number" step="0.1" id="logChest" placeholder="optional">
+      </div>
+      <div class="field">
+        <label for="logWaist">Waist (cm)</label>
+        <input type="number" step="0.1" id="logWaist" placeholder="optional">
+      </div>
+      <div class="field">
+        <label for="logArm">Arm (cm)</label>
+        <input type="number" step="0.1" id="logArm" placeholder="optional">
+      </div>
+      <div class="field field-wide">
+        <label for="logNote">Note</label>
+        <input type="text" id="logNote" placeholder="how did the week feel?">
+      </div>
+      <button type="submit" class="btn btn-primary">Add entry</button>
+    </form>
+
+    <div class="chart-card">
+      <canvas id="weightChart" height="240"></canvas>
+    </div>
+
+    <div class="table-wrap">
+      <table class="log-table" id="logTable">
+        <thead>
+          <tr><th>Date</th><th>Weight</th><th>Chest</th><th>Waist</th><th>Arm</th><th>Note</th><th></th></tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+    <p class="empty-state" id="logEmpty">No entries yet &mdash; log your first weigh-in above.</p>
+  </section>
+
+  <!-- ============ NOTES ============ -->
+  <section class="panel" id="notes">
+    <div class="section-head">
+      <p class="eyebrow">Scratchpad</p>
+      <h2>Training Notes</h2>
+      <p class="section-sub">Free-form notes, saved automatically to this browser.</p>
+    </div>
+    <textarea id="notesArea" placeholder="Cues, PR attempts, how a session felt, adjustments for next time..."></textarea>
+    <p class="save-hint" id="notesSaveHint">Saved</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>IRON LOG &middot; personal training tracker &middot; data stored only in your browser (localStorage)</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
